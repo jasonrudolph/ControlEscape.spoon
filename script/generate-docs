@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# See https://github.com/Hammerspoon/hammerspoon/blob/0.9.54/SPOONS.md#generating
+hs -c "hs.doc.builder.genJSON(\"$(pwd)\")" | grep -v "^--" > docs.json

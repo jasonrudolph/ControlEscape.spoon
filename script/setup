@@ -1,0 +1,33 @@
+#!/bin/sh
+
+MINIMUM_HAMMERSPOON_VERSION=0.9.54
+
+set -e
+
+which -s brew || (echo "Homebrew is required: http://brew.sh/" && exit 1)
+
+brew bundle check || brew bundle
+
+# Prepare custom settings for Hammerspoon
+mkdir -p ~/.hammerspoon
+if ! grep -sq "ControlEscape" ~/.hammerspoon/init.lua; then
+  echo "hs.loadSpoon('ControlEscape'):start() -- Load Hammerspoon bits from https://github.com/jasonrudolph/ControlEscape.spoon" >> ~/.hammerspoon/init.lua
+fi
+
+# If Hammerspoon is already running, kill it so we can pick up the new config
+# when opening Hammerspoon below
+killall Hammerspoon || true
+
+# Open Hammerspoon
+open /Applications/Hammerspoon.app
+
+# Enable Hammerspoon at startup
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' > /dev/null
+
+# Output Hammerspoon version
+echo
+echo "Hammerspoon version $MINIMUM_HAMMERSPOON_VERSION or greater required. Actual installed version:"
+brew cask info hammerspoon | grep "hammerspoon:"
+echo
+
+echo "Done! Be sure to verify your version of Hammerspoon above. If your version is older than $MINIMUM_HAMMERSPOON_VERSION, run 'brew update && script/setup' to install a compatible version."
