@@ -42,13 +42,13 @@ cd ~/.hammerspoon/Spoons/ControlEscape.spoon
 script/setup
 ```
 
-#### Optional: You're just one step away from a [more useful caps lock key](#optional-a-more-useful-caps-lock-key)
+#### Optional: You're just a few seconds away from a [more useful caps lock key](#optional-a-more-useful-caps-lock-key)
 
-With one more step, you'll be able to hold <kbd>caps lock</kbd> for <kbd>control</kbd>, and tap <kbd>caps lock</kbd> for <kbd>escape</kbd>:
+With one more bit of setup, you'll be able to hold <kbd>caps lock</kbd> for <kbd>control</kbd>, and tap <kbd>caps lock</kbd> for <kbd>escape</kbd>:
 
-```
-script/remap-caps-lock-to-control
-```
+Open *System Preferences*, navigate to *Keyboard > Modifier Keys*, and set the <kbd>caps lock</kbd> key to <kbd>control</kbd>. [[screenshot]](https://user-images.githubusercontent.com/2988/27111039-7f620442-507b-11e7-9bcf-93d46e14af13.png)
+
+Now you're ready to rock. 🤘
 
 ## Where can I get this code as a Spoon?
 
