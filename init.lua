@@ -12,7 +12,7 @@ obj.__index = obj
 obj.name = 'ControlEscape'
 obj.version = '0.1'
 obj.author = 'Jason Rudolph <jason@jasonrudolph.com>'
-obj.homepage = 'https://github.com/jasonrudolph/keyboard'
+obj.homepage = 'https://github.com/jasonrudolph/ControlEscape.spoon'
 obj.license = 'MIT - https://opensource.org/licenses/MIT'
 
 function obj:init()
