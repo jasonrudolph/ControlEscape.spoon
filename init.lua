@@ -48,7 +48,7 @@ function obj:init()
         self.controlKeyTimer:start()
       else
         if self.sendEscape then
-          hs.eventtap.keyStroke({}, 'escape', 0)
+          hs.eventtap.keyStroke({}, 'escape')
         end
         self.lastModifiers = newModifiers
         self.controlKeyTimer:stop()
