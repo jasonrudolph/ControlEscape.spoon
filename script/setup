@@ -4,7 +4,7 @@ MINIMUM_HAMMERSPOON_VERSION=0.9.54
 
 set -e
 
-which -s brew || (echo "Homebrew is required: http://brew.sh/" && exit 1)
+command -v brew > /dev/null || (echo "Homebrew is required: http://brew.sh/" && exit 1)
 
 brew bundle check || brew bundle
 
@@ -25,9 +25,9 @@ open /Applications/Hammerspoon.app
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' > /dev/null
 
 # Output Hammerspoon version
+CURRENT_VERSION=$(brew info hammerspoon | grep "hammerspoon:")
 echo
-echo "Hammerspoon version $MINIMUM_HAMMERSPOON_VERSION or greater required. Actual installed version:"
-brew cask info hammerspoon | grep "hammerspoon:"
+echo "Hammerspoon version $MINIMUM_HAMMERSPOON_VERSION or greater required. Actual installed version: $CURRENT_VERSION"
 echo
 
 echo "Done! Be sure to verify your version of Hammerspoon above. If your version is older than $MINIMUM_HAMMERSPOON_VERSION, run 'brew update && script/setup' to install a compatible version."
