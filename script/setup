@@ -1,33 +1,39 @@
-#!/bin/sh
-
-MINIMUM_HAMMERSPOON_VERSION=0.9.54
+#!/usr/bin/env bash
 
 set -e
 
-command -v brew > /dev/null || (echo "Homebrew is required: http://brew.sh/" && exit 1)
+MINIMUM_HAMMERSPOON_VERSION=0.9.54
 
-brew bundle check || brew bundle
+function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
 
-# Prepare custom settings for Hammerspoon
-mkdir -p ~/.hammerspoon
-if ! grep -sq "ControlEscape" ~/.hammerspoon/init.lua; then
-  echo "hs.loadSpoon('ControlEscape'):start() -- Load Hammerspoon bits from https://github.com/jasonrudolph/ControlEscape.spoon" >> ~/.hammerspoon/init.lua
+command -v brew > /dev/null || (echo "--- ERROR: Homebrew is required. Get it here: https://brew.sh/" && exit 1)
+
+command -v hs > /dev/null \
+    && (killall Hammerspoon && echo "--- Killed Hammerspoon") || echo "--- Hammerspoon is not running" \
+    && brew reinstall --build-from-source --force --quiet hammerspoon \
+    || (brew install --HEAD --quiet hammerspoon && echo "--- Installed Hammerspoon")
+
+# Prepare Hammerspoon custom settings
+mkdir -p "$HOME"/.hammerspoon/Spoons
+if ! grep -sq "ControlEscape" "$HOME"/.hammerspoon/init.lua; then
+    echo "hs.loadSpoon('ControlEscape'):start() -- Load Hammerspoon bits from https://github.com/jasonrudolph/ControlEscape.spoon" >> "$HOME"/.hammerspoon/init.lua
 fi
-
-# If Hammerspoon is already running, kill it so we can pick up the new config
-# when opening Hammerspoon below
-killall Hammerspoon || true
+echo "--- Added settings to Hammerspoon config"
 
 # Open Hammerspoon
 open /Applications/Hammerspoon.app
 
 # Enable Hammerspoon at startup
-osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' > /dev/null
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:true}' > /dev/null \
+    || echo "--- ERROR: failed to enable Hammerspoon autostart"
 
 # Output Hammerspoon version
-CURRENT_VERSION=$(brew info hammerspoon | grep "hammerspoon:")
-echo
-echo "Hammerspoon version $MINIMUM_HAMMERSPOON_VERSION or greater required. Actual installed version: $CURRENT_VERSION"
-echo
+CURRENT_VERSION="$(brew info --json=v2 hammerspoon | jq '.casks[0].installed')"
 
-echo "Done! Be sure to verify your version of Hammerspoon above. If your version is older than $MINIMUM_HAMMERSPOON_VERSION, run 'brew update && script/setup' to install a compatible version."
+if [ "$(version "$CURRENT_VERSION")" -ge "$(version "$MINIMUM_HAMMERSPOON_VERSION")" ]; then
+    echo "--- SUCCESS: Hammerspoon $CURRENT_VERSION was installed."
+else
+    echo "--- ERROR: Hammerspoon version $MINIMUM_HAMMERSPOON_VERSION or greater is required. Actual installed version: $CURRENT_VERSION."
+    echo "--- Try running "brew update" and then re-run this script."
+    echo "--- If the error persists, open an issue here: https://github.com/jasonrudolph/ControlEscape.spoon"
+fi
